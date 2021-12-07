@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="alert alert-info" role="alert">
+   <p>Is this your first time with us? 
+   <a class="alert-link" href="{{ url_for('auth.signup') }}">Register here</a></p>
+ </div>
+
+   
+    <div class="mx-auto border border-secondary h-75 w-50" style="margin: 2em">
+
+         <form action = "/login" method ="post" class="p-1">
+            <div class="form-group">
+            </div>
+                     {{ form.hidden_tag() }}
+                     
+                     <div style = font-size:20px; font-weight:bold; margin-left:150px;>
+                        {{ form.username.label }}<br>
+                        {{ form.username(class_="form-control") }}
+                        <br>
+                        
+                        {{ form.password.label }} {{ form.password(class_="form-control") }}
+            <!-- <p>{{ form.remember_me.label }} {{ form.remember_me(class_="form-control") }} </p> -->
+                        <br>
+                        {{ form.submit(class_="btn btn-primary") }}
+                     </div>
+         
+      </form>
+         {% for mesg in get_flashed_messages() %}
+         <div class="alert alert-danger" role="alert">
+         <p>{{ mesg }}</p>
+         </div>
+
+         {% endfor %}
+     
+   </div>
+{% endblock %}
