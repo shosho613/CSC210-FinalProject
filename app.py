@@ -15,17 +15,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 db.init_app(app)
 # init db
 if not os.path.isfile("db.sqlite"):
-    from .models import *
+    from models import *
     db.create_all(app=app)
 # blueprint for auth routes in our app
-from .auth import auth as auth_blueprint
+from auth import auth as auth_blueprint
 app.register_blueprint(auth_blueprint)
 
 # blueprint for non-auth parts of app
-from .main import main as main_blueprint
+from main import main as main_blueprint
 app.register_blueprint(main_blueprint)
 migrate = Migrate(app, db)
 login.login_view = 'login'
 
-def create_app():
-    return app
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)

@@ -10,9 +10,10 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from . import db
-from app.forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm
-from app.models import User
+from app import db
+
+from forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm
+from models import User
 
 
 auth = Blueprint('auth', __name__)

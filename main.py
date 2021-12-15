@@ -4,9 +4,9 @@ import pandas as pd
 from flask import Blueprint, render_template, url_for, redirect, flash, request
 from flask.wrappers import Response
 from flask_login import login_required, current_user
-from . import db
-from app.forms import ExerciseForm, WorkoutForm
-from app.models import User, Exercise, Workout, FinishedWorkout, FinishedExercise
+from app import db
+from forms import ExerciseForm, WorkoutForm
+from models import User, Exercise, Workout, FinishedWorkout, FinishedExercise
 
 main = Blueprint('main', __name__)
 
