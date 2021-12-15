@@ -15,6 +15,7 @@ Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 future==0.18.2
 greenlet==1.1.2
+gunicorn==20.0
 idna==3.2
 importlib-metadata==4.8.2
 importlib-resources==5.4.0
@@ -35,7 +36,5 @@ PyYAML==5.3.1
 regex==2020.10.23
 six==1.15.0
 SQLAlchemy==1.4.27
-torch==1.7.0
-torchaudio==0.7.0
 WTForms==2.3.3
 zipp==3.6.0
