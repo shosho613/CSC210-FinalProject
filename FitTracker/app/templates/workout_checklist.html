@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<hr class="my-1">
+<nav class="navbar navbar-light bg-light">
+  <span class="navbar-brand mb-0 h1">{{ workout.name }}</span>
+  <span class="h4">
+    <label id="minutes">00</label>:<label id="seconds">00</label>
+  </span>    
+  <span>
+    <button id="finishWorkout" type="submit" class="btn btn-primary mb-3">Finish Workout</button>
+
+  </span>
+</nav>
+<form class="" style="padding: 3%;">
+        <div class="form-row">
+                                {% for exercise in exercises %}
+                                    <div class="card form-group col-md-4">
+                                        <div class="card-body" id="{{exercise.id}}">
+                                            <h4 class="card-title">{{exercise.name}}</h4>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{exercise.notes}}</h6>                                    
+                                            <ol style="list-style-type: none;">
+                                            {% for set_num in range(exercise.num_sets) %}
+                                                <li>
+                                                    <label class="form-check-label"> <input id="{{exercise.id}}-{{set_num}}" class="checkbox" type="checkbox">Set {{set_num+1}}</label>
+                                                    <br>
+                                                    <label class="form-label">Weight
+                                                    <input id="{{exercise.id}}-{{set_num}}-weight" class="form-control" value="{{exercise.weight}}"></label>
+                                                    <label class="form-label">Number of Reps
+                                                    <input id="{{exercise.id}}-{{set_num}}-num_reps" class="form-control" value="{{exercise.num_reps}}"></label>  
+
+                                                </li>
+                                                <hr class="my-1">
+
+                                                {% endfor %}
+
+                                    </div>
+                               
+                                    </ol>
+                                </div>
+                                {% endfor %}
+                        </div>
+                    </div>
+
+</div>
+</form>
+
+<script>
+    url = new URL(document.URL)
+    const workout_id = url.searchParams.get('workout_id')
+    const submitWorkout = async () => {
+        var minutesLabel = document.getElementById("minutes");
+        var secondsLabel = document.getElementById("seconds");
+        minutes_taken = minutesLabel.innerHTML
+        seconds_taken = secondsLabel.innerHTML
+        console.log(`${minutes_taken}:${seconds_taken} `)
+        var exercises_dict = {{exercises_dict|tojson}} //extract jinja vals
+        var workout_dict = {{workout_dict|tojson}} // extract jinja vals
+        
+        var currentExercises = []
+        exercises_dict.forEach(exercise => {
+            tmpEx = document.getElementById(`${exercise.id}`);
+            currentExercises.push({ key: exercise.id, value: tmpEx});
+        })
+        console.log(currentExercises)
+        var completedExercises = []
+        for(var i = 0; i < currentExercises.length; i++){
+            // for each exercise, get sets that are checked, a
+            // and add their rep/weight data to a running dict
+            currEx = currentExercises[i]
+            currEx_id = currEx['key']
+            currEx_html = currEx['value']
+            set_num = exercises_dict[i]['num_sets']
+            exercise_data = {}
+            completed_sets = []
+            for(var j = 0; j < set_num; j++){
+                isChecked = document.getElementById(`${currEx_id}-${j}`).checked
+                if(isChecked){
+                    completed_sets.push(
+                    {"weight" : document.getElementById(`${currEx_id}-${j}-weight`).value,
+                    "num_reps" : document.getElementById(`${currEx_id}-${j}-num_reps`).value 
+                    })
+
+                }
+            }
+            exercise_data['completed_sets'] = completed_sets
+            exercise_data['name'] = exercises_dict[i]['name']
+            exercise_data['id'] = exercises_dict[i]['id']
+            exercise_data['notes'] = exercises_dict[i]['notes']
+            completedExercises.push(exercise_data)
+        }
+        // prepare receipt
+        workout_reciept = {}
+        workout_reciept['exercises'] = completedExercises
+        workout_reciept['id'] = workout_dict['id']
+        workout_reciept['name'] = workout_dict['name']
+        workout_reciept['description'] = workout_dict['description']
+        workout_reciept['time_taken'] = {"minutes" : minutes_taken, "seconds" : seconds_taken}
+        
+        console.log(workout_reciept)
+        // call POST to server to save receipt of completed workout
+
+        const response = await fetch('/workout/finish', {
+            method: 'POST',
+            body: JSON.stringify(workout_reciept), // string or object
+            headers: {
+            'Content-Type': 'application/json'
+            }
+        });
+        if(response.status == 200){
+            // redirect to profile
+            location.href = '/profile'
+        }
+        else{
+            // give notification error somehow.. alert?
+        }
+        }             
+    button = document.getElementById("finishWorkout") 
+    button.addEventListener('click', submitWorkout);
+    </script>
+<script>
+    var minutesLabel = document.getElementById("minutes");
+    var secondsLabel = document.getElementById("seconds");
+    var totalSeconds = 0;
+    setInterval(setTime, 1000);
+
+    function setTime() {
+    ++totalSeconds;
+    secondsLabel.innerHTML = pad(totalSeconds % 60);
+    minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+    }
+
+    function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+        return "0" + valString;
+    } else {
+        return valString;
+    }
+    }
+</script>
+{% endblock %}

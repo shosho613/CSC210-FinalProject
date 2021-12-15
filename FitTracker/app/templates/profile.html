@@ -1,7 +1,116 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-  Welcome, {{ name }}!
-</h1>
+<hr class="my-1">
+<nav class="navbar navbar-light bg-light">
+  <span class="navbar-brand mb-0 h1">{{ name }}'s Profile</span>
+  <div class="navbar-nav">
+    <a class='nav-item nav-link' href="{{url_for('main.createworkout')}}">Create New Workout</a>
+    <a class="nav-item nav-link" href="{{url_for('auth.logout')}}">Logout</a>
+  </div>
+</nav>
+<div class="container">
+  <div class="card-group">
+      <div class="card" style="">
+        <div class="card-body">
+          <h5 class="card-title">Start Workout</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Choose a workout to begin</h6>
+          <ul class="list-group list-group-flush">
+            {% for workout in workouts %}
+              <li class="list-group-item btn-light" onclick="location.href = '{{url_for('main.startworkout', workout_id=workout.id)}}'">    
+                {{workout.name}}</a>
+              </li>
+  
+          {% endfor %}
+          </ul>
+        
+  
+        </div>
+      </div>
+  
+      <div class="card" style="">
+        <div class="card-body">
+          <h5 class="card-title">Manage Existing Workouts</h5>
+          <ul class="list-group list-group-flush">
+            {% for workout in workouts %}
+              <li class="list-group-item">    
+                {{workout.name}} <a href="{{url_for('main.editworkout', workout_id=workout.id)}}" style="color: #3d3e40; float: right; padding-left: 10px;" ><i class="bi bi-wrench"></i></a> <a href="{{url_for('main.deleteworkout', workout_id=workout.id)}}" style="color: #3d3e40;  float: right; padding-right:10px;"><i class="bi bi-trash-fill"></i></a> 
+              </li>
+    
+          {% endfor %}
+          </ul>
+          {% for workout in workouts %}
+          <br>
+          {% endfor %}
+    
+        </div>
+      </div>
+   
+  
+  
+    <div class="card" style="">
+      <div class="card-body">
+        <h5 class="card-title">Workout History</h5>
+        <ul class="list-group list-group-flush">
+          {% for workout in finished_workouts %}
+          <li class="list-group-item">    
+            {{workout.name}} (Time taken: {{workout.duration}}) 
+            <a href="{{url_for('main.deletefinishedworkout', finished_workout_id=workout.id)}}" style="color: #3d3e40;  float: right; padding-right:10px;"><i class="bi bi-trash-fill"></i></a> 
+          </li>
+        {% endfor %}
+        </ul>
+      
+      </div>
+    </div>
+  </div>
+
+  <div class="jumbotron">
+    <h3 class="display-4">Workout Statistics</h5>
+      <p class="lead">
+        Average Workout Duration: {{avg_workout_time}}
+        <br>
+        Average Total Pounds lifted in a Workout: {{avg_pounds_lifted}} lbs
+      </p>  
+      <hr class="my-4">
+      <h4 class="display-6" style="text-align: center;">Completed Workout Frequency</h4>
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <div id="plot-completed-workouts"style="max-width: 64px; margin-right: 40%">
+
+        </div>
+  
+      </div>
+             
+      
+    </div>
+  
+  
+  
+</div>
+
+
+
+<script>
+  var raw_workout_data = {{completed_workouts|tojson}}
+  var layout = {
+  height: 400,
+  width: 500
+};
+    var data = [
+  {
+    x: Object.keys(raw_workout_data),
+    y: Object.values(raw_workout_data),
+    type: 'bar',
+    marker: {
+      color: ['rgb(49,130,189)', 'rgb(138, 199, 235)'],
+      opacity: 0.85
+    }
+
+  }
+];
+
+Plotly.newPlot('plot-completed-workouts', data, layout);
+  
+ 
+</script>
+
 {% endblock %}

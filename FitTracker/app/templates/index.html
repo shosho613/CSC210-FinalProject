@@ -13,11 +13,20 @@
     <div class ="jumbotron">
         <h1 class="display-4">
             Welcome to FitTracker!
+            <img style="float: right" src="/static/img1.jpg" alt="WorkoutImage" width="200" height="100">
+
         </h1>
         <hr class="my-4">
-        <p class="lead">
-            Build workout programs or track ongoing workout progress using this one stop shop tool. 
-        </p>
+        <div>
+            <p class="lead">
+                Build workout programs or track ongoing workout progress using this one stop shop tool. 
+           
+            </p>
+            <a class="btn btn-primary" href="{{url_for('auth.signup')}}">Sign Up</a>
+            <a class="btn btn-primary" href="{{url_for('auth.login')}}">Login</a>
+
+        </div>
+
     </div>
 </div>
 

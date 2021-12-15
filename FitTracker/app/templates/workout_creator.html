@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Workout Editor</span>  
+    <span>
+        {{ form.submit(class_="btn btn-primary") }}
+  
+    </span>
+  </nav>
+
+<form method="POST" action="" style="padding: 3%;">
+    <div class="form-row">
+        <div class="card form-group">
+            <div class="card-body">
+                {{ form.hidden_tag() }}
+                <h5 class="card-title">Workout Details</h5>
+                <div class="form-group col-md-2">
+                    {{ form.workout_name.label }} {{ form.workout_name }}
+    
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.description.label }} {{ form.description }}
+    
+                </div>
+            </div>
+          
+            <br />
+        </div>
+        {% for exercise in form.exercises %}
+            {{ exercise.hidden_tag() }}
+            <div class="card form-group col-md-4">
+                <div class="card-body">
+                    <h5 class="card-title">Exercise Information</h5>
+                    <ol style="list-style-type: none;">
+                        <li>
+                            {{exercise.exercise_name.label}} {{exercise.exercise_name}}
+        
+                        </li>
+                        <li>
+                            {{exercise.num_sets.label}} {{exercise.num_sets}}
+        
+                        </li>
+                        <li>
+                            {{exercise.num_reps.label}} {{exercise.num_reps}}
+        
+                        </li>
+                        <li>
+                            {{exercise.intended_weight.label}} {{exercise.intended_weight}}
+        
+                        </li>
+                        <li>
+                            {{exercise.notes.label}} {{exercise.notes}}
+        
+                        </li>
+                    </ol>
+                </div>
+          
+            </div>
+        {% endfor %}
+        
+    </div>
+   
+        
+        <!-- <button id="addExercise">Add Exercise</button>
+        <script>
+            url = new URL(document.URL)
+            const workout_id = url.searchParams.get('workout_id')
+            const addExercise = async () => {
+                const response = await fetch('/addExercise?' + new URLSearchParams({
+                workout_id: workout_id}));
+                }             
+            button = document.getElementById("addExercise") 
+            button.addEventListener('click', addExercise);
+            </script>
+         -->
+    
+         {% if form.errors %}
+         {{ form.errors }}
+     {% endif %}
+    </form>
+    </div>
+    
+{% endblock %}
