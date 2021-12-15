@@ -5,16 +5,18 @@
 <nav class="navbar navbar-light bg-light">
     <span class="navbar-brand mb-0 h1">Workout Editor</span>  
     <span>
-        {{ form.submit(class_="btn btn-primary") }}
   
     </span>
   </nav>
 
 <form method="POST" action="" style="padding: 3%;">
+    {{ form.hidden_tag() }}
+
+    {{ form.submit(class_="btn btn-primary") }}
+
     <div class="form-row">
         <div class="card form-group">
             <div class="card-body">
-                {{ form.hidden_tag() }}
                 <h5 class="card-title">Workout Details</h5>
                 <div class="form-group col-md-2">
                     {{ form.workout_name.label }} {{ form.workout_name }}
